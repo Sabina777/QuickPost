@@ -1,0 +1,11 @@
+{
+  "name": "src",
+  "version": "1.0.0",
+  "description": "\"backend-focused learning project that simulates the core components of a scalable social media feed system\"",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Sabina Prajapati",
+  "license": "ISC"
+}
