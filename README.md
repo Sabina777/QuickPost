@@ -13,4 +13,11 @@
 - Asynchronous processing
 - Data consistency and availability
 
+
+## 🧱 System Design Steps
+- ✅ Step 1: Monolith MVP
+- ✅ Step 2: Load Balancer — [Read more](./docs/load-balancer.md)
+- 🔜 Step 3: Redis Caching — [Planned](./docs/redis-caching.md)
+
+
 This project is intentionally kept simple on the front-end but powerful in architecture to help developers understand how to scale applications from **zero to millions of users**.

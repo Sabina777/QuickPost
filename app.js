@@ -18,6 +18,11 @@ mongoose.connect(process.env.MONGO_URI)
 app.get('/', (req, res) => {
   res.send('QuickPost API is running');
 });
+app.use((req, res, next) => {
+  // req.socket.localPort gives the port number
+  console.log(`Request for ${req.method} ${req.originalUrl} handled by port ${req.socket.localPort}`);
+  next();
+});
 
 // Use routes
 app.use('/api/auth', authRoutes);
