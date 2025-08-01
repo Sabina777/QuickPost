@@ -1,5 +1,5 @@
-const Post = require('../models/postModel');
-
+const {Post,createPost,getAllPosts} = require('../models/postModel');
+const { getCachedFeed, setCachedFeed,invalidateFeedCache } = require('../cache/feedCache');
 // Create Post
 exports.createPost = async (req, res) => {
   try {
@@ -9,9 +9,29 @@ exports.createPost = async (req, res) => {
       content,
       createdBy: req.user.id,
     });
+        await invalidateFeedCache(); // Invalidate cache after creating a post
+
     res.status(201).json(post);
   } catch (err) {
     res.status(400).json({ message: 'Post creation failed', error: err.message });
+  }
+};
+
+
+exports.getFeed = async function(req, res) {
+  try {
+    const cachedFeed = await getCachedFeed();
+    if (cachedFeed) {
+      return res.json({ source: 'cache', data: cachedFeed });
+    }
+
+    const posts = await getAllPosts();
+    await setCachedFeed(posts);
+
+    res.json({ source: 'db', data: posts });
+  } catch (err) {
+    console.error('Fetch Feed Error:', err);
+    res.status(500).json({ error: 'Internal server error' });
   }
 };
 
@@ -24,6 +44,8 @@ exports.getAllPosts = async (req, res) => {
     res.status(500).json({ message: 'Error fetching posts' });
   }
 };
+
+
 
 // Get Single Post
 exports.getPostById = async (req, res) => {
@@ -49,6 +71,7 @@ exports.updatePost = async (req, res) => {
     post.title = req.body.title || post.title;
     post.content = req.body.content || post.content;
     const updated = await post.save();
+        await invalidateFeedCache(); // Invalidate cache after updating a post
     res.status(200).json(updated);
   } catch (err) {
     res.status(500).json({ message: 'Update failed', error: err.message });
@@ -65,6 +88,8 @@ exports.deletePost = async (req, res) => {
     }
 
     await post.remove();
+     await invalidateFeedCache(); // Invalidate cache after deleting a post
+
     res.status(200).json({ message: 'Post deleted successfully' });
   } catch (err) {
     res.status(500).json({ message: 'Delete failed', error: err.message });

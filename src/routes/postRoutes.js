@@ -7,14 +7,16 @@ const {
   getPostById,
   updatePost,
   deletePost,
+  getFeed
 } = require('../controllers/postController');
 
 // Create a new post (auth required)
 router.post('/', auth, createPost);
 
 // Get all posts (public)
-router.get('/', getAllPosts);
+router.get('/', getFeed);
 
+//get feed
 // Get a single post by ID (public)
 router.get('/:id', getPostById);
 
